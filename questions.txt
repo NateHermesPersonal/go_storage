@@ -3,5 +3,5 @@ You have entered Charmander, is that correct?
 What is Charmander's attack IV?
 What is Charmander's defense IV?
 What is Charmander's hp IV?
-Is Charmander Dynamax(d) or Gigantamax(g)? (n for no)
+Is Charmander Dynamax(d) or Gigantamax(g)? (n for neither)
 Is Charmander Shadow?
