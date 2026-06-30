@@ -875,7 +875,26 @@
 661,Fletchling,
 662,Fletchinder,
 663,Talonflame,
-664,Scatterbug,
+664,Scatterbug,Icy Snow
+664-1,Scatterbug,Polar
+664-10,Scatterbug,High Plains
+664-11,Scatterbug,Sandstorm
+664-12,Scatterbug,River
+664-13,Scatterbug,Monsoon
+664-14,Scatterbug,Savanna
+664-15,Scatterbug,Sun
+664-16,Scatterbug,Ocean
+664-17,Scatterbug,Jungle
+664-18,Scatterbug,Fancy
+664-19,Scatterbug,Poké Ball
+664-2,Scatterbug,Tundra
+664-3,Scatterbug,Continental
+664-4,Scatterbug,Garden
+664-5,Scatterbug,Elegant
+664-6,Scatterbug,Meadow
+664-7,Scatterbug,Modern
+664-8,Scatterbug,Marine
+664-9,Scatterbug,Archipelago
 665,Spewpa,
 666,Vivillon,Icy Snow
 666-1,Vivillon,Polar
