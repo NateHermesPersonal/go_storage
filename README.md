@@ -6,4 +6,3 @@ hp
 shadow
 dynamax
 gigantamax
-shiny

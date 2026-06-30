@@ -1,7 +1,8 @@
 Enter a number
-You have entered Charmander, is that correct?
+> 4
+You have entered Charmander, is that correct? (Other forms of Charmander are: 4-1->Charmander-FakeForm)
 What is Charmander's attack IV?
 What is Charmander's defense IV?
 What is Charmander's hp IV?
-Is Charmander Dynamax(d) or Gigantamax(g)? (n for neither)
 Is Charmander Shadow?
+Is Charmander Dynamax(d) or Gigantamax(g)? (n for neither)
