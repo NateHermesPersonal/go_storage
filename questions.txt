@@ -1,8 +1,9 @@
 Enter a number
-> 4
-You have entered Charmander, is that correct? (Other forms of Charmander are: 4-1->Charmander-FakeForm)
-What is Charmander's attack IV?
-What is Charmander's defense IV?
-What is Charmander's hp IV?
-Is Charmander Shadow?
-Is Charmander Dynamax(d) or Gigantamax(g)? (n for neither)
+> 6
+You have entered Charizard, is that correct? (Other forms of Charizard are: 4-1->Charizard-FakeForm)
+What is Charizard's attack IV?
+What is Charizard's defense IV?
+What is Charizard's hp IV?
+Is Charizard Shadow?
+Is Charizard Dynamax(d) or Gigantamax(g)? (n for neither)
+Is Charizard Mega?
