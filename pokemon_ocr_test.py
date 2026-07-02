@@ -63,7 +63,7 @@ def process_video(video_path):
     last_seen_key = None
     
     # Lowered from 5.0 to 1.8 to force the screen to be completely motionless
-    MOTION_THRESHOLD = 1.8  
+    MOTION_THRESHOLD = 3.0
 
     print("Analyzing video with strict validation filters...")
     
