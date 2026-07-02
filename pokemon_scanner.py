@@ -11,6 +11,10 @@ from tqdm import tqdm
 # ==========================================
 VIDEO_PATH = os.path.join("data", "appraise_sample.mp4")
 OUTPUT_CSV = "pokemon_iv_inventory.csv"
+DEBUG_DIR = "debug_captures"
+
+# Ensure the debug directory exists
+os.makedirs(DEBUG_DIR, exist_ok=True)
 
 # Windows Tesseract path alignment
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -26,7 +30,6 @@ HP_Y      = 2000 + 15
 
 X_START = 125
 X_END   = 500
-BAR_TOTAL_WIDTH = X_END - X_START  # 375 pixels
 
 def clean_ocr_string(text):
     return re.sub(r'[^a-zA-Z\s\-]', '', text).strip()
@@ -44,20 +47,10 @@ def extract_name(frame):
     return clean_ocr_string(name_text)
 
 def calculate_single_stat(mask_image, y_coordinate):
-    """
-    Counts the number of white pixels along the horizontal line 
-    from X_START to X_END and maps it to a value between 0 and 15.
-    """
-    # Extract the line of pixels across our bar range
+    """Counts white pixels along the horizontal line and maps it to 0-15."""
     pixel_row = mask_image[y_coordinate, X_START:X_END]
-    
-    # White pixels in our binary mask have a value of 255
     white_pixel_count = np.sum(pixel_row == 255)
-    
-    # Convert pixel length to 0-15 scale (25 pixels per stat point)
     iv_value = int(round(white_pixel_count / 25.0))
-    
-    # Constrain values to safe limits
     return max(0, min(15, iv_value))
 
 def process_video(video_path):
@@ -70,11 +63,10 @@ def process_video(video_path):
     pokemon_data = []
     captured_inventory_set = set()
     
-    # Motion configuration looking at the stable appraisal card panel background
     MOTION_THRESHOLD = 5.0  
     ret, prev_frame = cap.read()
 
-    print("Extracting Names and 0-15 IV statistics...")
+    print("Extracting Names and saving visual debug frames...")
     
     for _ in tqdm(range(total_frames - 1)):
         ret, frame = cap.read()
@@ -89,48 +81,53 @@ def process_video(video_path):
         motion_score = diff.mean() 
         
         if motion_score < MOTION_THRESHOLD:
-            # 1. Read the Name text
             name = extract_name(frame)
             
             if len(name) >= 3:
-                # 2. Generate the validated orange stat bar color mask
                 hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-                
-                # --- FIXED: COLOR BOUNDS APPLIED ---
-                lower_orange = np.array([5, 100, 100])
+                lower_orange = np.array([0, 100, 100])
                 upper_orange = np.array([25, 255, 255])
                 color_mask = cv2.inRange(hsv, lower_orange, upper_orange)
                 
-                # 3. Calculate IV scores from the mask
                 atk = calculate_single_stat(color_mask, ATTACK_Y)
                 dfn = calculate_single_stat(color_mask, DEFENSE_Y)
                 hp  = calculate_single_stat(color_mask, HP_Y)
                 
-                # Global Deduplication check using the composite identity tuple
                 identity_tuple = (name, atk, dfn, hp)
                 
                 if identity_tuple not in captured_inventory_set:
                     pokemon_data.append({
-                        "Name": name,
-                        "Attack": atk,
-                        "Defense": dfn,
-                        "HP": hp,
-                        "Total_IV_%": round(((atk + dfn + hp) / 45), 2) * 100
+                        "Name": name, "Attack": atk, "Defense": dfn, "HP": hp,
+                        "Total_IV_%": round(((atk + dfn + hp) / 45.0) * 100, 1)
                     })
                     captured_inventory_set.add(identity_tuple)
-                    print(f"\n[Captured]: {name} | IV: {atk}/{dfn}/{hp} ({pokemon_data[-1]['Total_IV_%']}% )")
+                    print(f"\n[Captured]: {name} | IV: {atk}/{dfn}/{hp}")
+                    
+                    # --- FIX: SAVE VISUAL DEBUG VISUALS ---
+                    # 1. Save the original clean frame
+                    orig_filename = os.path.join(DEBUG_DIR, f"{name}_original.png")
+                    cv2.imwrite(orig_filename, frame)
+                    
+                    # 2. Draw target lines over the mask and save it
+                    canvas = cv2.cvtColor(color_mask, cv2.COLOR_GRAY2BGR)
+                    # Draw where the script checks (Green horizontal lines)
+                    cv2.line(canvas, (X_START, ATTACK_Y), (X_END, ATTACK_Y), (0, 255, 0), 2)
+                    cv2.line(canvas, (X_START, DEFENSE_Y), (X_END, DEFENSE_Y), (0, 255, 0), 2)
+                    cv2.line(canvas, (X_START, HP_Y), (X_END, HP_Y), (0, 255, 0), 2)
+                    # Draw vertical boundary marks (Blue lines)
+                    cv2.line(canvas, (X_START, ATTACK_Y-20), (X_START, HP_Y+20), (255, 0, 0), 2)
+                    cv2.line(canvas, (X_END, ATTACK_Y-20), (X_END, HP_Y+20), (255, 0, 0), 2)
+                    
+                    proc_filename = os.path.join(DEBUG_DIR, f"{name}_processed.png")
+                    cv2.imwrite(proc_filename, canvas)
 
         prev_frame = frame
 
     cap.release()
     
-    # Output to structural spreadsheet format
     if pokemon_data:
-        df = pd.DataFrame(pokemon_data)
-        df.to_csv(OUTPUT_CSV, index=False)
-        print(f"\nSuccess! Compiled {len(pokemon_data)} items into '{OUTPUT_CSV}'")
-    else:
-        print("\nProcessed video track but found no valid data.")
+        pd.DataFrame(pokemon_data).to_csv(OUTPUT_CSV, index=False)
+        print(f"\nSuccess! Saved to '{OUTPUT_CSV}'. Check the '{DEBUG_DIR}' folder for diagnostic images.")
 
 if __name__ == "__main__":
     process_video(VIDEO_PATH)

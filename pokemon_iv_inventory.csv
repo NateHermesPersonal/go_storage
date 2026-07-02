@@ -1,50 +1,29 @@
 Name,Attack,Defense,HP,Total_IV_%
-Axew,1,13,10,53.0
-Mien,0,0,0,0.0
-Mienfoo,0,0,0,0.0
-Mienfoo,0,0,7,16.0
-Mienfoo,0,0,1,2.0
-Mienfoo,0,0,3,7.000000000000001
-lienfoo,0,0,1,2.0
-Litwi,0,0,0,0.0
-Litwick,0,0,4,9.0
-Litwick,0,0,3,7.000000000000001
-itwick,0,0,0,0.0
-Tepi,6,1,9,36.0
-Tepig,7,1,7,33.0
-S Geor,0,0,0,0.0
-Geodude,0,0,0,0.0
-Geodude,0,0,2,4.0
-Geodude,0,0,3,7.000000000000001
-Geodude,0,0,5,11.0
-odude,0,0,1,2.0
-Seed,0,0,0,0.0
-Seedot,0,0,2,4.0
-Seedot,0,0,1,2.0
-Seedot,0,0,8,18.0
-Seedot,0,0,7,16.0
-Seedot,0,0,6,13.0
-Seedot - S,0,0,5,11.0
-eedot -,0,0,1,2.0
-ff Digle,0,0,2,4.0
-Diglett,0,0,8,18.0
-Diglett,0,0,7,16.0
-Diglett,0,0,5,11.0
-Diglett ff,0,0,5,11.0
-Diglett a,0,0,0,0.0
-- Scytt,0,0,0,0.0
-S Scyther,0,0,4,9.0
-Scyther,0,0,8,18.0
-Scyther,0,0,9,20.0
-Scyther,0,0,10,22.0
-Scyther,0,0,6,13.0
-Scyther,0,0,5,11.0
-Scyther,0,0,7,16.0
-Scyther,0,0,1,2.0
-Scyther,0,0,3,7.000000000000001
-cyther - S,0,0,0,0.0
-her -,0,0,0,0.0
-- Ferrosee,0,0,2,4.0
-Ferroseed,0,0,6,13.0
-Ferroseed,0,0,4,9.0
-Ferroseed,0,0,5,11.0
+Axew,1,13,10,53.3
+Mien,0,0,11,24.4
+Mienfoo,0,0,11,24.4
+lienfoo,0,0,11,24.4
+Litwi,0,0,11,24.4
+Litwick,0,0,11,24.4
+itwick,0,0,11,24.4
+Tepi,6,1,9,35.6
+Tepig,7,1,7,33.3
+S Geor,0,0,10,22.2
+Geodude,0,0,10,22.2
+Geodude,0,0,11,24.4
+odude,0,0,11,24.4
+Seed,0,0,11,24.4
+Seedot,0,0,11,24.4
+Seedot - S,0,0,11,24.4
+eedot -,0,0,11,24.4
+ff Digle,0,0,11,24.4
+Diglett,0,0,11,24.4
+Diglett ff,0,0,11,24.4
+Diglett a,0,0,11,24.4
+- Scytt,0,0,11,24.4
+S Scyther,0,0,11,24.4
+Scyther,0,0,11,24.4
+cyther - S,0,0,11,24.4
+her -,0,0,11,24.4
+- Ferrosee,0,0,11,24.4
+Ferroseed,0,0,11,24.4
