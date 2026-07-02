@@ -54,39 +54,47 @@ def process_video(video_path):
         return
 
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    
-    # Read the very first frame
-    ret, first_frame = cap.read()
-    if not ret:
-        print("Error: Empty video file.")
-        return
-
     pokemon_data = []
-    
-    # --- THE MEMORY SET ---
-    # Keeps track of every unique (Name, CP) tuple we have successfully saved
     captured_inventory_set = set()
     
-    # --- FIX 1: CAPTURE THE 1ST POKÉMON ---
-    # Manually check frame 1 before starting the movement loop
-    raw_name, raw_cp = extract_pokemon_data(first_frame)
-    clean_name = clean_ocr_string(raw_name)
-    clean_cp = raw_cp.strip()
+    # --- FIX: FIRST POKÉMON WARM-UP SCAN ---
+    print("Performing warm-up scan for the first Pokémon...")
+    best_first_name = ""
+    best_first_cp = 0
     
-    if len(clean_name) >= 3 and clean_cp.isdigit():
-        cp_val = int(clean_cp)
-        if 10 <= cp_val <= 6000:
-            pokemon_data.append({"Name": clean_name, "CP": cp_val})
-            captured_inventory_set.add((clean_name, cp_val))
-            print(f"[Initial Frame Capture]: {clean_name} | CP: {cp_val}")
+    # Scan the first 15 frames of the video to give the UI time to fade in
+    for _ in range(min(15, total_frames)):
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        raw_name, raw_cp = extract_pokemon_data(frame)
+        clean_name = clean_ocr_string(raw_name)
+        clean_cp = raw_cp.strip()
+        
+        if len(clean_name) >= 3 and clean_cp.isdigit():
+            cp_val = int(clean_cp)
+            if 10 <= cp_val <= 6000:
+                best_first_name = clean_name
+                # Keep the largest number read (842 will overwrite 2)
+                if cp_val > best_first_cp:
+                    best_first_cp = cp_val
+        
+        # Save the 15th frame to use as the baseline for the next motion loop
+        prev_frame = frame
 
-    prev_frame = first_frame
+    # If we found a valid first entry during warm-up, lock it into our spreadsheet
+    if best_first_name and best_first_cp > 0:
+        pokemon_data.append({"Name": best_first_name, "CP": best_first_cp})
+        captured_inventory_set.add((best_first_name, best_first_cp))
+        print(f"[Initial Frame Capture]: {best_first_name} | CP: {best_first_cp}")
+
     MOTION_THRESHOLD = 5.0  
-
-    print("Running data extraction with absolute deduplication...")
+    print("Running absolute deduplication scan on remaining frames...")
     
-    # Loop through the rest of the video
-    for _ in tqdm(range(total_frames - 1)):
+    # Process the rest of the video starting from frame 16
+    remaining_frames = total_frames - min(15, total_frames)
+    for _ in tqdm(range(remaining_frames)):
         ret, frame = cap.read()
         if not ret:
             break
@@ -108,8 +116,6 @@ def process_video(video_path):
                 cp_val = int(clean_cp)
                 
                 if 10 <= cp_val <= 6000:
-                    # --- FIX 2: GLOBAL DEDUPLICATION CHECK ---
-                    # Only save if this specific Name + CP combination hasn't been seen yet
                     identity_tuple = (clean_name, cp_val)
                     
                     if identity_tuple not in captured_inventory_set:
