@@ -1,0 +1,3 @@
+pip install opencv-python pytesseract pandas tqdm
+
+https://docs.coro.net/featured/agent/install-tesseract-windows
